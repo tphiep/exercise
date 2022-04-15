@@ -37,10 +37,4 @@ public class QueryController {
                 DateTimeHelper.formatDateTime(toDate));
         return ResponseEntity.ok(result);
     }
-
-//    @GetMapping(value = "/ping",
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<String> ping() {
-//        return ResponseEntity.ok("OK");
-//    }
 }

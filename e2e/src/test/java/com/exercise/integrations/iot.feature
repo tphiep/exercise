@@ -49,6 +49,7 @@ Feature: Testing IOT Rest API
 
   @parallel=false
   Scenario: Retrieve data from given deviceId
+    * url baseUrl = 'http://localhost:8090'
     * def sleep = function(pause){ java.lang.Thread.sleep(pause*1000) }
     * call sleep 1
     Given path deviceIdUrl
@@ -63,6 +64,7 @@ Feature: Testing IOT Rest API
 
   @parallel=false
   Scenario: Retrieve data from second device
+    * url baseUrl = 'http://localhost:8090'
     * def sleep = function(pause){ java.lang.Thread.sleep(pause*1000) }
     * call sleep 1
     Given path deviceId2Url

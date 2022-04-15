@@ -37,3 +37,14 @@ services:
       DATABASE_PORT:    27017
       MONGO:     "mongo"
       KAFKA:     "kafka"
+  iot-read:
+    image: "exercise/iotsrv-read:0.0.1"
+    ports:
+      - 8090:8090
+    depends_on:
+      - mongo
+    environment:
+      PROFILE: "default"
+      SERVER_PORT: "8090"
+      DATABASE_PORT:    27017
+      MONGO:     "mongo"

@@ -1,6 +1,5 @@
 package com.exercise.config;
 
-
 import com.exercise.domain.DeviceItem;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

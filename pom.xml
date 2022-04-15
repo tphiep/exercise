@@ -19,8 +19,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
   <modules>
+    <module>iot-service-read</module>
     <module>iot-service</module>
-    <module>e2e</module>
+<!--    <module>e2e</module>-->
   </modules>
   <build>
     <plugins>
