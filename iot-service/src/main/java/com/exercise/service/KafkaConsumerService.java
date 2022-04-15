@@ -1,6 +1,6 @@
 package com.exercise.service;
 
-import com.exercise.converter.DataConverter;
+import com.exercise.helper.DataConverter;
 import com.exercise.domain.DeviceItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,6 @@ public class KafkaConsumerService {
         Optional<String> json = this.dataConverter.toJson(deviceItem);
         json.ifPresentOrElse(
                 doc -> this.deviceDataService.persist(doc, deviceItem.getDeviceId()),
-                        () -> log.info("Service"));
+                        () -> log.info("Invalid message from device {}", deviceItem.getDeviceId()));
     }
 }

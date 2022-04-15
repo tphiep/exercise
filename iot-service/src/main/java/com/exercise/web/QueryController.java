@@ -1,0 +1,45 @@
+package com.exercise.web;
+
+import com.exercise.helper.DateTimeHelper;
+import com.exercise.service.DeviceDataService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.time.LocalDateTime;
+
+@Slf4j
+@RestController
+@RequestMapping(path="/api")
+public class QueryController {
+
+    private DeviceDataService deviceDataService;
+
+    public QueryController(@Autowired DeviceDataService deviceDataService) {
+        this.deviceDataService = deviceDataService;
+    }
+
+    @GetMapping(value = "/devices/{deviceId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> get(
+            @PathVariable String deviceId,
+            @Valid @RequestParam @DateTimeFormat(pattern = DateTimeHelper.DATETIME_PATTERN) LocalDateTime fromDate,
+            @Valid @RequestParam @DateTimeFormat(pattern = DateTimeHelper.DATETIME_PATTERN) LocalDateTime toDate
+
+    ) {
+        String result = this.deviceDataService.find(deviceId,
+                DateTimeHelper.formatDateTime(fromDate),
+                DateTimeHelper.formatDateTime(toDate));
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/ping",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("OK");
+    }
+}

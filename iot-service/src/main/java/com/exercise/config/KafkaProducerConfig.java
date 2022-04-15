@@ -19,7 +19,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
-    // Use topic or queue
+
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();

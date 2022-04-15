@@ -1,4 +1,4 @@
-package com.exercise.converter;
+package com.exercise.helper;
 
 import com.exercise.domain.DeviceItem;
 import com.exercise.request.CreateDeviceDataRequest;
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class DataConverter {
 
     public DeviceItem toDeviceItem(CreateDeviceDataRequest request) {
-        String timestamp = Instant.now().toString();
+        String timestamp = DateTimeHelper.formatDateTime(LocalDateTime.now());
         DeviceItem item = new DeviceItem();
         item.setDeviceId(request.getDeviceId());
         item.setData(request.getData());

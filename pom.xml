@@ -28,10 +28,18 @@
         <groupId>com.spotify</groupId>
         <artifactId>docker-maven-plugin</artifactId>
         <version>0.4.10</version>
+        <dependencies>
+          <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
+            <version>1.2.0</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies>
         <configuration>
-        <baseImage>java</baseImage>
-        <imageName>exercise</imageName>
-      </configuration>
+          <baseImage>java</baseImage>
+          <imageName>exercise</imageName>
+        </configuration>
       </plugin>
     </plugins>
   </build>

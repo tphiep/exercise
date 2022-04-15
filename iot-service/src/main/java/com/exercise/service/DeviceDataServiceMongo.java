@@ -1,12 +1,12 @@
 package com.exercise.service;
 
-import com.exercise.domain.DeviceItem;
+import com.exercise.helper.QueryHelper;
 import com.exercise.repository.DeviceDataRepository;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 public class DeviceDataServiceMongo implements DeviceDataService {
@@ -15,15 +15,15 @@ public class DeviceDataServiceMongo implements DeviceDataService {
 
     private MongoTemplate mongoTemplate;
 
+    private QueryHelper queryHelper;
+
     @Autowired
-    public DeviceDataServiceMongo(DeviceDataRepository repository, MongoTemplate mongoTemplate) {
+    public DeviceDataServiceMongo(DeviceDataRepository repository,
+                                  MongoTemplate mongoTemplate,
+                                  QueryHelper queryHelper) {
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
-    }
-
-    @Override
-    public void persist(DeviceItem item) {
-        repository.save(item);
+        this.queryHelper = queryHelper;
     }
 
     @Override
@@ -31,46 +31,10 @@ public class DeviceDataServiceMongo implements DeviceDataService {
         this.mongoTemplate.save(doc, id);
     }
 
-    /**
-     * [{
-     *     $group: {
-     *         _id: {
-     *             deviceId: '$deviceId',
-     *             longitude: '$longitude',
-     *             latitude: '$latitude'
-     *         },
-     *         data: {
-     *             $push: '$data'
-     *         }
-     *     }
-     * }, {
-     *     $project: {
-     *         _id: 0,
-     *         deviceId: '$_id.deviceId',
-     *         longitude: '$_id.longitude',
-     *         latitude: '$_id.latitude',
-     *         data: '$data'
-     *     }
-     * }]
-     *
-     * Arrays.asList(new Document("$group",
-     *     new Document("_id",
-     *     new Document("deviceId", "$deviceId")
-     *                 .append("longitude", "$longitude")
-     *                 .append("latitude", "$latitude"))
-     *             .append("data",
-     *     new Document("$push", "$data"))),
-     *     new Document("$project",
-     *     new Document("_id", 0L)
-     *             .append("deviceId", "$_id.deviceId")
-     *             .append("longitude", "$_id.longitude")
-     *             .append("latitude", "$_id.latitude")
-     *             .append("data", "$data")))
-     * @param deviceId
-     * @param from
-     * @param to
-     */
     @Override
-    public void find(String deviceId, LocalDateTime from, LocalDateTime to) {
+    public String find(String deviceId, String fromDateTime, String toDateTime) {
+        String query = this.queryHelper.buildGetDeviceDataQuery(deviceId, fromDateTime, toDateTime);
+        Document document = mongoTemplate.executeCommand(query);
+        return this.queryHelper.getJsonResult(document);
     }
 }

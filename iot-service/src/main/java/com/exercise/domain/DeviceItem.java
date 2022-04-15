@@ -15,6 +15,8 @@ public class DeviceItem {
     @JsonProperty("data")
     private JsonNode data;
 
+    private String timestamp;
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -45,6 +47,14 @@ public class DeviceItem {
 
     public void setData(JsonNode data) {
         this.data = data;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
