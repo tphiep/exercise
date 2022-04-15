@@ -11,4 +11,4 @@ This is a simple project to implement REST APIs for storing and reading device d
 # System 
 >![Preview](https://raw.githubusercontent.com/tphiep/exercise/master/Diagram.drawio.png)
 # Design 
-- This project applies CQRS patterns to separate write behavior from read behavior to provides stability and scalability of the services.
+- This project applies CQRS patterns to separate write behavior from read behavior to provide stability and scalability of these services.
