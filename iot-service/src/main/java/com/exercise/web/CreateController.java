@@ -33,14 +33,9 @@ public class DeviceController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AcceptedResponse> create(@RequestBody CreateDeviceDataRequest request) {
         log.info("Received data from device id={}", request.getDeviceId());
-        String timestamp = Instant.now().toString();
-        DeviceItem item = this.dataConverter.toDeviceItem(timestamp, request);
+        DeviceItem item = this.dataConverter.toDeviceItem(request);
         this.sendDataService.send(item);
-        AcceptedResponse response = AcceptedResponse.builder()
-                .deviceId(item.getDeviceId())
-                .timestamp(timestamp)
-                .build();
-        return ResponseEntity.accepted().body(response);
+        return ResponseEntity.accepted().body(this.dataConverter.toAcceptedResponse(item));
     }
 
     @GetMapping(value = "/ping",

@@ -2,29 +2,37 @@ package com.exercise.converter;
 
 import com.exercise.domain.DeviceItem;
 import com.exercise.request.CreateDeviceDataRequest;
+import com.exercise.response.AcceptedResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Slf4j
 @Service
 public class DataConverter {
 
-    public DeviceItem toDeviceItem(String timestamp, CreateDeviceDataRequest request) {
+    public DeviceItem toDeviceItem(CreateDeviceDataRequest request) {
+        String timestamp = Instant.now().toString();
         DeviceItem item = new DeviceItem();
         item.setDeviceId(request.getDeviceId());
         item.setData(request.getData());
         item.setLongitude(request.getLongitude());
         item.setLatitude(request.getLatitude());
-        JsonNode node = item.getData();
-        ((ObjectNode) node).put("timestamp", timestamp);
+        item.setTimestamp(timestamp);
         return item;
+    }
+
+    public AcceptedResponse toAcceptedResponse(DeviceItem item) {
+        AcceptedResponse acceptedResponse = AcceptedResponse.builder()
+                .deviceId(item.getDeviceId())
+                .timestamp(item.getTimestamp())
+                .build();
+        return acceptedResponse;
     }
 
     public Optional<String> toJson(DeviceItem item) {
