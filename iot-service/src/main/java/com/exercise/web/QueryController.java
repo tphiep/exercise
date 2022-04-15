@@ -31,6 +31,7 @@ public class QueryController {
             @Valid @RequestParam @DateTimeFormat(pattern = DateTimeHelper.DATETIME_PATTERN) LocalDateTime toDate
 
     ) {
+        log.info("Receive request of deviceId={}", deviceId);
         String result = this.deviceDataService.find(deviceId,
                 DateTimeHelper.formatDateTime(fromDate),
                 DateTimeHelper.formatDateTime(toDate));
