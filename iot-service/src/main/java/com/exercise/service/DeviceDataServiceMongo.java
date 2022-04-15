@@ -1,7 +1,6 @@
 package com.exercise.service;
 
 import com.exercise.helper.QueryHelper;
-import com.exercise.repository.DeviceDataRepository;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,26 +10,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class DeviceDataServiceMongo implements DeviceDataService {
 
-    private DeviceDataRepository repository;
-
     private MongoTemplate mongoTemplate;
 
     private QueryHelper queryHelper;
 
     @Autowired
-    public DeviceDataServiceMongo(DeviceDataRepository repository,
-                                  MongoTemplate mongoTemplate,
+    public DeviceDataServiceMongo(MongoTemplate mongoTemplate,
                                   QueryHelper queryHelper) {
-        this.repository = repository;
         this.mongoTemplate = mongoTemplate;
         this.queryHelper = queryHelper;
     }
 
+    /**
+     * Add new data document to device collection
+     * @param doc
+     * @param id
+     */
     @Override
     public void persist(String doc, String id) {
         this.mongoTemplate.save(doc, id);
     }
 
+    /**
+     * Execute aggregate query to find time series of given device id
+     * @param deviceId
+     * @param fromDateTime
+     * @param toDateTime
+     * @return
+     */
     @Override
     public String find(String deviceId, String fromDateTime, String toDateTime) {
         String query = this.queryHelper.buildGetDeviceDataQuery(deviceId, fromDateTime, toDateTime);

@@ -19,6 +19,10 @@ public class SendDataService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    /**
+     * Send CREATE EVENT to kafka
+     * @param data
+     */
     public void send(DeviceItem data) {
         kafkaTemplate.send(topic, data.getDeviceId(), data);
     }

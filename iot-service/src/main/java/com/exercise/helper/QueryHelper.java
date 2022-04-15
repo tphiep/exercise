@@ -40,7 +40,7 @@ public class QueryHelper {
             "}}], cursor: { batchSize: 1 }}";
 
     /**
-     * Return Mongo aggregation query for given deviceId
+     * Return a Mongo aggregation query for given criteria
      * @param deviceId
      * @param fromDate
      * @param toDate

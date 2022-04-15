@@ -1,6 +1,6 @@
 package com.exercise.web;
 
-import com.exercise.helper.DataConverter;
+import com.exercise.helper.CustomMapper;
 import com.exercise.domain.DeviceItem;
 import com.exercise.request.CreateDeviceDataRequest;
 import com.exercise.response.AcceptedResponse;
@@ -22,11 +22,11 @@ public class CreateController {
 
     private SendDataService sendDataService;
 
-    private DataConverter dataConverter;
+    private CustomMapper customMapper;
 
-    public CreateController(SendDataService sendDataService, DataConverter dataConverter) {
+    public CreateController(SendDataService sendDataService, CustomMapper customMapper) {
         this.sendDataService = sendDataService;
-        this.dataConverter = dataConverter;
+        this.customMapper = customMapper;
     }
 
     @PostMapping(value = "/devices",
@@ -34,9 +34,9 @@ public class CreateController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AcceptedResponse> create(@Valid @RequestBody CreateDeviceDataRequest request) {
         log.info("Received data from device id={}", request.getDeviceId());
-        DeviceItem item = this.dataConverter.toDeviceItem(request);
+        DeviceItem item = this.customMapper.toDeviceItem(request);
         this.sendDataService.send(item);
-        return ResponseEntity.accepted().body(this.dataConverter.toAcceptedResponse(item));
+        return ResponseEntity.accepted().body(this.customMapper.toAcceptedResponse(item));
     }
 
 }
