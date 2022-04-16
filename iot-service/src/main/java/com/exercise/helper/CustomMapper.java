@@ -41,8 +41,7 @@ public class CustomMapper extends ObjectMapper {
             this.writer().withDefaultPrettyPrinter();
             json = this.writeValueAsString(item);
         } catch (JsonProcessingException e) {
-            log.error("Unable to convert from deviceId {}", item.getDeviceId());
-            e.printStackTrace();
+            log.error("Unable to convert data from deviceId {}", item.getDeviceId(), e);
         }
         return Optional.of(json);
     }

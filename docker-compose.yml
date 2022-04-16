@@ -4,11 +4,8 @@ services:
     image: "landoop/fast-data-dev:2.3.0"
     ports:
       - 9092:9092
-      - 3030:3030
-      - 29092:29092
       - 2801:2801
-      - 8081-8083:8081-8083
-      - 9581-9585:9581-9585
+      - 29092:29092
     hostname: kafka
     environment:
       KAFKA_LISTENERS: LC://kafka:29092,LX://kafka:9092
@@ -34,7 +31,6 @@ services:
     environment:
       PROFILE: "default"
       SERVER_PORT: "8089"
-      DATABASE_PORT:    27017
       MONGO:     "mongo"
       KAFKA:     "kafka"
   iot-read:
@@ -42,9 +38,9 @@ services:
     ports:
       - 8090:8090
     depends_on:
+      - kafka
       - mongo
     environment:
       PROFILE: "default"
       SERVER_PORT: "8090"
-      DATABASE_PORT:    27017
       MONGO:     "mongo"

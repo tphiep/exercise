@@ -4,7 +4,12 @@ import com.exercise.helper.CustomMapper;
 import com.exercise.domain.DeviceItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,11 +32,19 @@ public class KafkaConsumerService {
      * Process CREATE Device Data Event, convert data event to document then persist to mongodb
      * @param deviceItem
      */
+    @RetryableTopic(attempts = "2",
+            backoff = @Backoff(delay = 100, multiplier = 2.0))
     @KafkaListener(topics = "${kafka.topic}", containerFactory = "kafkaListenerContainerFactory")
     public void onMessage(DeviceItem deviceItem) {
+        log.info("Consume {}", deviceItem);
         Optional<String> json = this.customMapper.toJson(deviceItem);
         json.ifPresentOrElse(
                 doc -> this.deviceDataService.persist(doc, deviceItem.getDeviceId()),
-                        () -> log.info("Invalid message from device {}", deviceItem.getDeviceId()));
+                        () -> log.info("Invalid message from device {}", deviceItem));
+    }
+
+    @DltHandler
+    public void handleDeadMessage(DeviceItem deviceItem, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        log.info("Data from device {} sent to dead letter queue: {}", deviceItem, topic);
     }
 }

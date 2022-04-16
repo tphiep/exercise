@@ -44,7 +44,6 @@ public class QueryControllerTest {
 
     @Test
     public void shouldReturnError_ForInvalidFromDate() throws Exception {
-        final String body = "{}";
         String deviceId = "unRegisteredDevice";
         String fromDate = "2022-04-12T17:35:03.120Z";
         String toDate = "2022-04-15T17:35:03.120Z";

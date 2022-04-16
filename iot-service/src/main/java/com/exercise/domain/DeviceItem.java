@@ -98,4 +98,15 @@ public class DeviceItem {
     public int hashCode() {
         return Objects.hash(deviceId);
     }
+
+    @Override
+    public String toString() {
+        return "DeviceItem{" +
+                "deviceId='" + deviceId + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", data=" + data +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
 }
