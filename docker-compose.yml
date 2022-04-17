@@ -1,46 +1,55 @@
-version: '2'
+version: "2.1"
 services:
   kafka:
     image: "landoop/fast-data-dev:2.3.0"
     ports:
       - 9092:9092
-      - 2801:2801
+      - 2181:2181
       - 29092:29092
-    hostname: kafka
     environment:
-      KAFKA_LISTENERS: LC://kafka:29092,LX://kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: LC://kafka:29092,LX://kafka:9092
-      KAFKA_REST_LISTENERS: http://kafka:8082
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LC:PLAINTEXT,LX:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: LC
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_HEAP_OPTS: -Xmx256m
+      KAFKA_ADVERTISED_HOST_NAME: "kafka"
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+#      KAFKA_REST_LISTENERS: http://kafka:8082
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LC:PLAINTEXT,LX:PLAINTEXT
+#      KAFKA_INTER_BROKER_LISTENER_NAME: LC
+#      KAFKA_ZOOKEEPER_CONNECT: kafka:2181
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: -Xmx512m
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--zookeeper", "kafka:2181", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 4
   mongo:
     image: "mongo:5.0"
     ports:
     - 27017:27017
-    depends_on:
-      - kafka
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
   iot:
     image: "exercise/iotsrv:0.0.1"
     ports:
-    - 8089:8089
+    - "8089:8089"
     depends_on:
-      - kafka
-      - mongo
+      kafka:
+        condition:  service_healthy
+      mongo:
+        condition: service_healthy
     environment:
-      PROFILE: "default"
       SERVER_PORT: "8089"
       MONGO:     "mongo"
       KAFKA:     "kafka"
   iot-read:
     image: "exercise/iotsrv-read:0.0.1"
     ports:
-      - 8090:8090
+      - "8090:8090"
     depends_on:
-      - kafka
-      - mongo
+      mongo:
+        condition: service_healthy
     environment:
-      PROFILE: "default"
       SERVER_PORT: "8090"
       MONGO:     "mongo"

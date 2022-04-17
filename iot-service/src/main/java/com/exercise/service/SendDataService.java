@@ -24,7 +24,7 @@ public class SendDataService {
      * @param data
      */
     public void send(DeviceItem data) {
-        kafkaTemplate.send(topic, data.getDeviceId(), data);
+        kafkaTemplate.send(topic, data);
     }
 
 }
