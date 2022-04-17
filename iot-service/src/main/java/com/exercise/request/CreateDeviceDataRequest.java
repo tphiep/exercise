@@ -1,5 +1,6 @@
 package com.exercise.request;
 
+import com.exercise.error.ErrorMessage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -15,14 +18,21 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateDeviceDataRequest {
-    @NotNull
-    @NotBlank
+
+    @NotEmpty(message = "Field is required")
     private String deviceId;
 
-    private double latitude;
+    @NotNull(message = ErrorMessage.REQUIRED)
+    @Min(value = -90, message = ErrorMessage.LATITUDE_RANGE)
+    @Max(value = 90, message = ErrorMessage.LATITUDE_RANGE)
+    private Double latitude;
 
-    private double longitude;
+    @NotNull(message = ErrorMessage.REQUIRED)
+    @Min(value = -180, message = ErrorMessage.LONGITUDE_RANGE)
+    @Max(value = 180, message = ErrorMessage.LONGITUDE_RANGE)
+    private Double longitude;
 
+    @NotNull(message = ErrorMessage.REQUIRED)
     @JsonProperty("data")
     private JsonNode data;
 }
