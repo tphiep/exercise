@@ -51,7 +51,6 @@ public class QueryHelper {
         String query = RETRIEVE_DATA_FOR_DEVICE_QUERY.replaceAll("#deviceId#", deviceId)
                 .replaceAll("#fromDate#", fromDate)
                 .replaceAll("#toDate#", toDate);
-        log.debug("Generated query {}", query);
         return query;
     }
 

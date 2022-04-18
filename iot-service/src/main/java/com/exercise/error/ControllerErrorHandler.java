@@ -1,12 +1,8 @@
 package com.exercise.error;
 
-import com.exercise.error.ErrorMessage;
-import com.exercise.error.ErrorResponse;
-import com.exercise.error.ValidationError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

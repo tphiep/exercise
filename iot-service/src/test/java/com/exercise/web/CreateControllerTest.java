@@ -1,22 +1,19 @@
 package com.exercise.web;
 
 import com.exercise.domain.DeviceItem;
+import com.exercise.helper.CustomMapper;
 import com.exercise.service.DeviceDataService;
 import com.exercise.service.SendDataService;
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,9 +21,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(CreateController.class)
+@Import(CustomMapper.class)
 public class CreateControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -39,11 +35,6 @@ public class CreateControllerTest {
 
     @Captor
     ArgumentCaptor<DeviceItem> deviceItemCaptor;
-
-    @BeforeAll
-    public void setUp() {
-
-    }
 
     @Test
     public void givenInvalidDeviceData_shouldReturnBadRequest_NoMessageSendToQueue() throws Exception {
@@ -74,8 +65,8 @@ public class CreateControllerTest {
     public void givenValidDeviceData_ThenMassageWillSendToQueue_AcceptedStatusReturn() throws Exception {
         final String body = "{\n" +
                 "    \"deviceId\": \"1d1ada31231311\",\n" +
-                "    \"latitude\": 1123.1,\n" +
-                "    \"longitude\": -1120.333,\n" +
+                "    \"latitude\": 13.1,\n" +
+                "    \"longitude\": -10.333,\n" +
                 "    \"data\":\n" +
                 "        {\n" +
                 "            \"humidity\": 123,\n" +
@@ -96,7 +87,7 @@ public class CreateControllerTest {
         verify(sendDataService).send(deviceItemCaptor.capture());
         DeviceItem item = deviceItemCaptor.getValue();
         assertThat(item.getDeviceId()).isEqualTo("1d1ada31231311");
-        assertThat(item.getLatitude()).isEqualTo(1123.1);
-        assertThat(item.getLongitude()).isEqualTo(-1120.333);
+        assertThat(item.getLatitude()).isEqualTo(13.1);
+        assertThat(item.getLongitude()).isEqualTo(-10.333);
     }
 }
