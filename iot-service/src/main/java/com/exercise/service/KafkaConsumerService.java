@@ -1,5 +1,6 @@
 package com.exercise.service;
 
+import com.exercise.domain.Device;
 import com.exercise.helper.CustomMapper;
 import com.exercise.domain.DeviceItem;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,16 @@ public class KafkaConsumerService {
     public void onMessage(DeviceItem deviceItem) {
         log.info("Consume {}", deviceItem);
         Optional<String> json = this.customMapper.toJson(deviceItem);
+        Device device = Device.builder()
+                .deviceId(deviceItem.getDeviceId())
+                .longitude(deviceItem.getLongitude())
+                .latitude(deviceItem.getLatitude())
+                .build();
         json.ifPresentOrElse(
-                doc -> this.deviceDataService.persist(doc, deviceItem.getDeviceId()),
-                        () -> log.info("Invalid message from device {}", deviceItem));
+
+        doc -> this.deviceDataService.persist(device, doc, deviceItem.getDeviceId()),
+                () -> log.info("Invalid message from device {}", deviceItem));
+
     }
 
     @DltHandler

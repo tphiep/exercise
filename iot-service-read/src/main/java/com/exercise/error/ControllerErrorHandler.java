@@ -1,5 +1,6 @@
 package com.exercise.error;
 
+import com.exercise.exception.DeviceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
@@ -32,6 +34,14 @@ public class ControllerErrorHandler {
                 .status(BAD_REQUEST)
                 .message(message).build();
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler({DeviceNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleArgumentTypeMismatchError(DeviceNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse.ErrorResponseBuilder()
+                .status(NOT_FOUND)
+                .message(ex.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

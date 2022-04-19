@@ -2,19 +2,18 @@ package com.exercise.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.data.annotation.Transient;
 
 import java.util.Objects;
 
 public class DeviceItem {
     @JsonProperty("deviceId")
     private String deviceId;
-    @JsonProperty("latitude")
+    @Transient
     private double latitude;
-    @JsonProperty("longitude")
+    @Transient
     private double longitude;
-    @JsonProperty("data")
     private JsonNode data;
-
     private String timestamp;
 
     public String getDeviceId() {

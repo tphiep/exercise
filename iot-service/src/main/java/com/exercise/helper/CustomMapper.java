@@ -1,10 +1,12 @@
 package com.exercise.helper;
 
+import com.exercise.domain.DeviceData;
 import com.exercise.domain.DeviceItem;
 import com.exercise.request.CreateDeviceDataRequest;
 import com.exercise.response.AcceptedResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,17 @@ public class CustomMapper extends ObjectMapper {
         String json = null;
         try {
             this.writer().withDefaultPrettyPrinter();
-            json = this.writeValueAsString(item);
+            json = this.writeValueAsString(fromDeviceItem(item));
         } catch (JsonProcessingException e) {
             log.error("Unable to convert data from deviceId {}", item.getDeviceId(), e);
         }
         return Optional.of(json);
+    }
+
+    public DeviceData fromDeviceItem(DeviceItem item) {
+        DeviceData deviceData = new DeviceData(item.getData());
+        ObjectNode dataNode = (ObjectNode) deviceData.getData();
+        dataNode.put("timestamp", item.getTimestamp());
+        return deviceData;
     }
 }
