@@ -50,8 +50,9 @@ public class CustomMapper extends ObjectMapper {
 
     public DeviceData fromDeviceItem(DeviceItem item) {
         DeviceData deviceData = new DeviceData(item.getData());
-        ObjectNode dataNode = (ObjectNode) deviceData.getData();
-        dataNode.put("timestamp", item.getTimestamp());
+        Optional.ofNullable(deviceData.getData())
+                .ifPresent(dataNode -> ((ObjectNode)dataNode)
+                        .put("timestamp", item.getTimestamp()));
         return deviceData;
     }
 }

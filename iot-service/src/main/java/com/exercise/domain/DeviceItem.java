@@ -9,9 +9,7 @@ import java.util.Objects;
 public class DeviceItem {
     @JsonProperty("deviceId")
     private String deviceId;
-    @Transient
     private double latitude;
-    @Transient
     private double longitude;
     private JsonNode data;
     private String timestamp;

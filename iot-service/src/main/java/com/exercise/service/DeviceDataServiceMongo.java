@@ -21,19 +21,10 @@ public class DeviceDataServiceMongo implements DeviceDataService {
 
     /**
      * Add new data document to device collection
-     * @param doc
+     * @param device
+     * @param json
      * @param id
      */
-    @Override
-    public void persist(String json, String id) {
-        try {
-            this.mongoTemplate.save(json, id);
-        } catch (Throwable e) {
-            log.error("Failed to persist device data id='{}' with message '{}' ", id, e);
-            throw new MongoDBException(e.getMessage());
-        }
-    }
-
     @Transactional
     @Override
     public void persist(Device device, String json, String id) {
