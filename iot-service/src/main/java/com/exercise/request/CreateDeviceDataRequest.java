@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class CreateDeviceDataRequest {
 
-    @NotEmpty(message = "Field is required")
+    @NotEmpty(message = ErrorMessage.REQUIRED)
     private String deviceId;
 
     @NotNull(message = ErrorMessage.REQUIRED)
