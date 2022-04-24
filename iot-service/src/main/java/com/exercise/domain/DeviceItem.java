@@ -2,7 +2,6 @@ package com.exercise.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.data.annotation.Transient;
 
 import java.util.Objects;
 

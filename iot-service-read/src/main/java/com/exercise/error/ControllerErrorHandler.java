@@ -6,7 +6,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,14 +19,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @ControllerAdvice
 public class ControllerErrorHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationError(MethodArgumentNotValidException ex) {
         ErrorResponse errorResponse = ErrorResponse.builder().status(BAD_REQUEST).message("Validation errors").build();
         ex.getBindingResult().getFieldErrors().stream().map(ValidationError::fromFieldError).forEach(errorResponse::addError);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleArgumentTypeMismatchError(MethodArgumentTypeMismatchException ex) {
         String message = String.format(ErrorMessage.TYPE_ERROR, ex.getName(), ex.getRequiredType().getName());
         ErrorResponse errorResponse = new ErrorResponse.ErrorResponseBuilder()
@@ -36,12 +35,20 @@ public class ControllerErrorHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler({DeviceNotFoundException.class})
+    @ExceptionHandler(DeviceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleArgumentTypeMismatchError(DeviceNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse.ErrorResponseBuilder()
                 .status(NOT_FOUND)
                 .message(ex.getMessage()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> unknownError(IllegalArgumentException exception) {
+        ErrorResponse errorResponse = new ErrorResponse.ErrorResponseBuilder()
+                .status(BAD_REQUEST)
+                .message(exception.getMessage()).build();
+        return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

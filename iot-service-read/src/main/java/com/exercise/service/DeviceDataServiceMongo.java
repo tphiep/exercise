@@ -3,14 +3,13 @@ package com.exercise.service;
 import com.exercise.domain.DeviceData;
 import com.exercise.domain.Device;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,10 +36,11 @@ public class DeviceDataServiceMongo implements DeviceDataService {
      * @param toDateTime
      * @return
      */
-    public List<DeviceData> findBy(String deviceId, String fromDateTime, String toDateTime) {
-        MatchOperation matchFromDate = Aggregation.match(new Criteria("data.timestamp").gte(fromDateTime));
-        MatchOperation matchToDate = Aggregation.match(new Criteria("data.timestamp").lte(toDateTime));
-        ProjectionOperation projectStage = Aggregation.project("data");
+    public List<DeviceData> findBy(String deviceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        MatchOperation matchFromDate = Aggregation.match(new Criteria("timestamp").gte(fromDateTime));
+        MatchOperation matchToDate = Aggregation.match(new Criteria("timestamp").lte(toDateTime));
+        ProjectionOperation projectStage = Aggregation.project().and(AggregationExpression.from(MongoExpression
+                .create("\"$mergeObjects\":[\"$data\",{\"timestamp\":{\"$dateToString\":{format:\"%Y-%m-%dT%H:%M:%S:%LZ\",\"date\":\"$timestamp\"}}}]"))).as("data");
         Aggregation aggregation
                 = Aggregation.newAggregation(matchFromDate, matchToDate, projectStage);
         AggregationResults<DeviceData> data

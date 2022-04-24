@@ -38,12 +38,13 @@ public class QueryController {
 
     ) throws DeviceNotFoundException {
         log.info("Receive request of deviceId={}", deviceId);
+        if (fromDate.isAfter(toDate)) {
+            throw new IllegalArgumentException(String.format("'fromDate' must be less than or equal to 'toDate'"));
+        }
         Optional<Device> optionalDevice = this.deviceDataService.find(deviceId);
         Device device = optionalDevice.orElseThrow(() ->
                 new DeviceNotFoundException(String.format("Device Not Found id='%s'", deviceId)));
-        List<DeviceData> dataResults = this.deviceDataService.findBy(deviceId,
-                DateTimeHelper.formatDateTime(fromDate),
-                DateTimeHelper.formatDateTime(toDate));
+        List<DeviceData> dataResults = this.deviceDataService.findBy(deviceId, fromDate, toDate);
         return ResponseEntity.ok(toDeviceResult(device, dataResults));
     }
 
